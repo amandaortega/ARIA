@@ -106,7 +106,18 @@ def mut(MUTB,Lambda,i):
 
 
   
-
+'''                
+            fitness[idx,0] = 1/(math.pow(dist,2) + 0.001 )
+            # Calcula o fitness de cada anticorpo para o determinado Ag
+            
+            
+            
+        # Seleciona maior fitness 
+        Lambda = np.argmax(fitness)            
+        
+        l[Lambda] +=1   # Vetor com o número de AG reconhecidos             
+    plotstate()
+'''
   
 def supressao():
     global Ag
@@ -116,7 +127,7 @@ def supressao():
     a = 0.0
     b = 0.0
     l = np.zeros((len(Ab),1))
-    fitness = np.zeros((len(Ab),1))
+#    fitness = np.zeros((len(Ab),1))
     supr = []
 
     for i in range(Ag.shape[0]):
@@ -129,18 +140,12 @@ def supressao():
         
             cx = item[0]
             cy = item[1] 
-            
+            r =  item[3]
             dist = distance.euclidean([a,b],[cx,cy])
-                
-                
-            fitness[idx,0] = 1/(math.pow(dist,2) + 0.001 )
-            # Calcula o fitness de cada anticorpo para o determinado Ag
+             
             
-        # Seleciona maior fitness 
-        Lambda = np.argmax(fitness)            
-        
-        l[Lambda] +=1   # Vetor com o número de AG dentro do raio de Ab             
-    
+            if dist < r :
+                l[idx] +=1 
 
     supr = [ idx for idx,item in enumerate(l) if item == 0 ]   # Pega Ab que não reconheceram nehum Ag
             
@@ -149,6 +154,8 @@ def supressao():
         supr.remove(random.choice(supr))
 
     Ab =  [v for i, v in enumerate(Ab) if i not in supr] # Suprimi Ab perdedores
+
+
 
 
 
@@ -196,15 +203,16 @@ def clonagem(MUTB,E):
 
     Ab1 = [v for i, v in enumerate(AbGamma) if i in clon ]
  
+    
     for idx,item in enumerate(Ab1):
-        
+#        aux = Ags[idx][0]
         aux = random.choice(Ags[idx])  # Escolhe aleatóriamente Ag reconhecido fora do raio de Ab 
         Ab1[idx][0] = item[0] + MUTB*random.uniform(0,1)*(aux[0] - item[0])
         Ab1[idx][1] = item[1] + MUTB*random.uniform(0,1)*(aux[1] - item[1])
 
     Ab = [*Ab,*Ab1]  # Concatena os Ab's clonados
     
-   
+
 
  
   
@@ -235,7 +243,7 @@ def densidade(E):
                         
             dist = distance.euclidean([a,b],[cx,cy])
             
-            if dist > E:
+            if dist < E:
                Ab[idx][3]+=1   # Atualiza valor de densidade com o # de AG
   
 
@@ -249,8 +257,12 @@ def atualR(r):
     
     den = [item[3] for item in Ab]
     for idx, item in enumerate(Ab):
-        
-        Ab[idx][2] = r * math.pow((max(den)/Ab[idx][3]), 1/dim)
+
+        if  Ab[idx][3] == 0: 
+            Ab[idx][2] = r
+            
+        else:    
+            Ab[idx][2] = r * math.pow((max(den)/Ab[idx][3]), 1/dim)
     
 
 
@@ -298,6 +310,10 @@ def main(pop_size,MAX_IT,N_MAT,r):
     global Ag
     global Ab
     global AbGamma
+    
+    random.seed(64)
+    
+    
     pop_size = pop_size # Tamanho população inicial
     
     MAX_IT = MAX_IT # Número máximo de interações
@@ -309,7 +325,7 @@ def main(pop_size,MAX_IT,N_MAT,r):
     MUTB = 1     # Taxa de mutação
     decay = 0.95 # Taxa de decaimento
     r = r     # Menor raio possível
-    E = 4     # Raio que define a vizinhança para o cálculo da densidade local
+    E = 5     # Raio que define a vizinhança para o cálculo da densidade local
     
     
     
@@ -394,8 +410,8 @@ Ag= dataD31
 
 
 
-h = main(pop_size=1,MAX_IT=10,N_MAT=25,r=1.8)
-
+h = main(pop_size=2,MAX_IT=20,N_MAT=5,r=0.95)
+plotstate()
 
 
 
@@ -415,5 +431,5 @@ plt.grid()
 plt.title('E')
 plt.legend()
 
-plotstate()
+
 
