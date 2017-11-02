@@ -2,6 +2,8 @@
 Adaptive Radius Immune Algorithm
 
 
+[ARIA](https://www.researchgate.net/publication/221506559_Adaptive_Radius_Immune_Algorithm_for_Data_Clustering)
+
 
 Bezerra, George & V. Barra, Tiago & De Castro, Leandro & Von Zuben, Fernando. (2005). Adaptive Radius Immune Algorithm for Data Clustering. 290-303. 10.1007/11536444_22.
 
@@ -18,4 +20,4 @@ leads to refined clustering results.
 
 
 
-[ARIA][https://www.researchgate.net/publication/221506559_Adaptive_Radius_Immune_Algorithm_for_Data_Clustering]
+
