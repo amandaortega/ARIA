@@ -106,18 +106,7 @@ def mut(MUTB,Lambda,i):
 
 
   
-'''                
-            fitness[idx,0] = 1/(math.pow(dist,2) + 0.001 )
-            # Calcula o fitness de cada anticorpo para o determinado Ag
-            
-            
-            
-        # Seleciona maior fitness 
-        Lambda = np.argmax(fitness)            
-        
-        l[Lambda] +=1   # Vetor com o número de AG reconhecidos             
-    plotstate()
-'''
+
   
 def supressao():
     global Ag
@@ -405,12 +394,12 @@ def main(pop_size,MAX_IT,N_MAT,r):
   
 Ab = []
 AbGamma= []
-dim= dataD31.ndim
-Ag= dataD31
+dim= dataShan.ndim
+Ag= dataShan
 
 
 
-h = main(pop_size=2,MAX_IT=20,N_MAT=5,r=0.95)
+h = main(pop_size=1,MAX_IT=15,N_MAT=240,r=0.92)
 plotstate()
 
 
@@ -421,6 +410,8 @@ plt.plot([None] + h['supr'], label="Ab's suprimidos")
 plt.plot([None] + h['clon'], label="Ab's clonados")
 plt.plot([None] + h['suprsi'], label="Ab's suprimidos (Auto Reconhecimento)")
 plt.grid()
+plt.xlabel("Iterações")
+plt.ylabel("Número de Ag")
 plt.title("Evolução Ab's")
 plt.legend()
 
@@ -428,6 +419,8 @@ fig = plt.figure(figsize=(15,7))
 
 plt.plot([None] + h['E'], label="Vizinhança E")
 plt.grid()
+plt.xlabel("Iterações")
+plt.ylabel("")
 plt.title('E')
 plt.legend()
 
