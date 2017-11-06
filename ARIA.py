@@ -18,17 +18,27 @@ from scipy.spatial import distance
 import copy
 
 
-matD31 = scipy.io.loadmat('d31.mat')
 
-dataD31 = matD31['dados']
-labelD31 = matD31['rotulo'] 
-
-
-
-matShan = scipy.io.loadmat('shan_compound.mat')
-
-dataShan = matShan['dados']
-labelShan = matShan['rotulo'] 
+def plothistory(h):
+    plt.figure(figsize=(15,7))
+    
+    plt.plot([None] + h['supr'], label="Ab's suprimidos")
+    plt.plot([None] + h['clon'], label="Ab's clonados")
+    plt.plot([None] + h['suprsi'], label="Ab's suprimidos (Auto Reconhecimento)")
+    plt.grid()
+    plt.xlabel("Iterações")
+    plt.ylabel("Número de Ag")
+    plt.title("Evolução Ab's")
+    plt.legend()
+    
+    plt.figure(figsize=(15,7))
+    
+    plt.plot([None] + h['E'], label="Vizinhança E")
+    plt.grid()
+    plt.xlabel("Iterações")
+    plt.ylabel("")
+    plt.title('E')
+    plt.legend()
 
 
 
@@ -49,7 +59,6 @@ def plotstate():
     plt.title('Espaço de busca')
     plt.xlabel('x')
     plt.ylabel('y')
-    #plt.yticks(y_major_ticks)
     plt.grid(which= 'both')
     plt.show()
 
@@ -69,12 +78,12 @@ def maturacao(N_MAT,MUTB):
     b = 0.0
     fitness = np.zeros((len(Ab),1))
     
-      
+    
     for j in range(N_MAT):
         # Escolhe randomicamente um Ag e apresenta ele para todos Ab
-        index = np.random.choice(Ag.shape[0],1, replace=False)[0]        
-        a = Ag[index,0]
-        b = Ag[index,1]
+        aux = random.choice(Ag)        
+        a = aux[0]
+        b = aux[1]
         
         
         for idx, item in enumerate(Ab):
@@ -92,17 +101,17 @@ def maturacao(N_MAT,MUTB):
         Lambda = np.argmax(fitness)
         
         # Muta indivíduo de maior fitness na direção do Ag que ele representa       
-        mut(MUTB,Lambda,index)
+        mut(MUTB,Lambda,aux)
 
 
  
        
-def mut(MUTB,Lambda,i):
+def mut(MUTB,Lambda,aux):
     global Ag
     global Ab
     
-    Ab[Lambda][0] = Ab[Lambda][0] + MUTB*random.uniform(0,1)*(Ag[i,0] - Ab[Lambda][0])
-    Ab[Lambda][1] = Ab[Lambda][1] + MUTB*random.uniform(0,1)*(Ag[i,1] - Ab[Lambda][1])
+    Ab[Lambda][0] = Ab[Lambda][0] + MUTB*random.uniform(0,1)*(aux[0] - Ab[Lambda][0])
+    Ab[Lambda][1] = Ab[Lambda][1] + MUTB*random.uniform(0,1)*(aux[1] - Ab[Lambda][1])
 
 
   
@@ -326,7 +335,7 @@ def main(pop_size,MAX_IT,N_MAT,r):
 
 
     for i in range(pop_size) :
-        Ab.append([random.uniform(0, 30),random.uniform(0, 30),random.uniform(r, 2*r),random.uniform(0, 10)])
+        Ab.append([random.uniform(0, 30),random.uniform(0, 30),random.uniform(r, 3*r),random.uniform(0, 10)])
     # cx,cy,r,densidade local
     
     #plotstate()
@@ -386,43 +395,41 @@ def main(pop_size,MAX_IT,N_MAT,r):
         h['suprsi'].append(suprsi)
         h['E'].append(E)
 
+    plotstate()
+
+    plothistory(h)
 
     return h
  
     
 
+
+matD31 = scipy.io.loadmat('d31.mat')
+
+dataD31 = matD31['dados']
+labelD31 = matD31['rotulo'] 
+
+
+
+matShan = scipy.io.loadmat('shan_compound.mat')
+
+dataShan = matShan['dados']
+labelShan = matShan['rotulo'] 
+
+
   
 Ab = []
 AbGamma= []
+
 dim= dataShan.ndim
 Ag= dataShan
 
 
 
 h = main(pop_size=1,MAX_IT=15,N_MAT=240,r=0.92)
-plotstate()
 
 
 
-fig = plt.figure(figsize=(15,7))
-
-plt.plot([None] + h['supr'], label="Ab's suprimidos")
-plt.plot([None] + h['clon'], label="Ab's clonados")
-plt.plot([None] + h['suprsi'], label="Ab's suprimidos (Auto Reconhecimento)")
-plt.grid()
-plt.xlabel("Iterações")
-plt.ylabel("Número de Ag")
-plt.title("Evolução Ab's")
-plt.legend()
-
-fig = plt.figure(figsize=(15,7))
-
-plt.plot([None] + h['E'], label="Vizinhança E")
-plt.grid()
-plt.xlabel("Iterações")
-plt.ylabel("")
-plt.title('E')
-plt.legend()
 
 
 
