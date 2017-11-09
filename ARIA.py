@@ -17,7 +17,7 @@ import scipy.io
 from scipy.spatial import distance
 import copy
 
-
+from numba import jit
 
 def plothistory(h):
     plt.figure(figsize=(15,7))
@@ -68,7 +68,6 @@ def plotstate():
 # Não precisa do raio para calcular o fitness
 
  
-
 def maturacao(N_MAT,MUTB):
     global Ag
     global Ab
